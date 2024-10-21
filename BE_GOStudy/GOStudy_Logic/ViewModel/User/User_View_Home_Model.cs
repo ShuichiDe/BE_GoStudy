@@ -78,9 +78,8 @@ namespace GO_Study_Logic.ViewModel.User
 
         public int totalAttendace { get; set; }
         public BlogPost_View_Model BlogPost { get; set; }
-        public PrivacySetting_View_Model PrivacySetting { get; set; }
+        public PrivacySetting_View_Model PrivacySetting { get; set; }  
 
-        public List<UserViewModel> AllFriends { get; set; } = new List<UserViewModel>();
         public List<Analytic_View_Model> Analytics { get; set; } = new List<Analytic_View_Model>(); 
 
         public List<Attendance_View_Model> Attendances { get; set; } = new List<Attendance_View_Model>(); 

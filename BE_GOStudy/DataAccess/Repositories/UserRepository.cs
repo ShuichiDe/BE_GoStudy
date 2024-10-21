@@ -30,8 +30,6 @@ namespace DataAccess.Repositories
         Task<IEnumerable<FriendRequest>> GetAllFriendRecipientsAsync(int userId);
 
         Task<IEnumerable<FriendRequest>> GetFriendsListAsync(int userId);
-
-        Task<IEnumerable<User>> getAlluser();
     }
     public partial class UserRepository : BaseRepository<User>, IUserRepository
     
@@ -183,11 +181,6 @@ namespace DataAccess.Repositories
        .AnyAsync(token => token.UserId == userid );
 
             return tokenExists;
-        }
-
-        public async Task<IEnumerable<User>> getAlluser()
-        {
-            return await _dbContext.Set<User>().ToListAsync();
         }
     }
 }
