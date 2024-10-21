@@ -63,7 +63,17 @@ namespace GO_Study_Logic.Service
         }
         public async Task<IEnumerable<TaskViewModel>> GetTasksByUserIdForTodayAsync(int userId)
         {
-            var tasks = await _taskRepository.GetTaskByUserIdForToday(userId);
+            /*var tasks = await _taskRepository.GetTaskByUserIdForToday(userId);
+            return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);*/
+            // Lấy thời gian UTC hiện tại
+            var todayUtc = DateTime.UtcNow.Date;
+    
+            // Tính toán thời gian bắt đầu và kết thúc cho ngày hôm nay
+            var startOfToday = todayUtc; // 00:00:00
+            var endOfToday = todayUtc.AddDays(1); // 00:00:00 của ngày mai
+
+            // Gọi repository với điều kiện thời gian
+            var tasks = await _taskRepository.GetTaskByUserIdForDateRange(userId, startOfToday, endOfToday);
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
         }
 
