@@ -66,14 +66,11 @@ namespace GO_Study_Logic.Service
             /*var tasks = await _taskRepository.GetTaskByUserIdForToday(userId);
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);*/
             // Lấy thời gian UTC hiện tại
-            var todayUtc = DateTime.UtcNow.Date;
-    
-            // Tính toán thời gian bắt đầu và kết thúc cho ngày hôm nay
-            var startOfToday = todayUtc; // 00:00:00
-            var endOfToday = todayUtc.AddDays(1); // 00:00:00 của ngày mai
+            var utcToday = DateTime.UtcNow.Date;
 
-            // Gọi repository với điều kiện thời gian
-            var tasks = await _taskRepository.GetTaskByUserIdForDateRange(userId, startOfToday, endOfToday);
+            // Gọi repository và so sánh với thời gian lưu trữ trong cơ sở dữ liệu
+            var tasks = await _taskRepository.GetTaskByUserIdForDateRange(userId, utcToday);
+    
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
         }
 
@@ -108,12 +105,19 @@ namespace GO_Study_Logic.Service
         // Save a new task
         public async Task SaveTaskAsync(TaskViewModel taskViewModel)
         {
-            
             var taskEntity = _mapper.Map<Tasks>(taskViewModel);
             taskEntity.Status = false;
             taskEntity.IsDeleted = false;
-            // Save the task entity
+
+            // Lưu thời gian theo UTC
+            taskEntity.ScheduledTime = DateTime.UtcNow;
+
             await _taskRepository.SaveTaskAsync(taskEntity);
+            /*var taskEntity = _mapper.Map<Tasks>(taskViewModel);
+            taskEntity.Status = false;
+            taskEntity.IsDeleted = false;
+            // Save the task entity
+            await _taskRepository.SaveTaskAsync(taskEntity);*/
         }
         public async Task<bool> UpdateStatusTaskCompleteAsync(int id)
         {
