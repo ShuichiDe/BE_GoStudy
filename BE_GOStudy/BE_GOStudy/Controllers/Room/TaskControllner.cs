@@ -146,20 +146,13 @@ namespace BE_GOStudy.Controllers.Room
         //    }
         //}
 
-        /*
         [HttpGet("today/{userId}")]
         public async Task<ActionResult<IEnumerable<TaskViewModel>>> GetTasksForToday(int userId)
         {
             var tasks = await _taskService.GetTasksByUserIdForTodayAsync(userId);
             return Ok(tasks);
         }
-        */
-        [HttpGet("today/{userId}")]
-        public async Task<ActionResult<IEnumerable<TaskViewModel>>> GetTasksForToday(int userId)
-        {
-            var tasks = await _taskService.GetTasksByUserIdForTodayAsync(userId);
-            return Ok(tasks);
-        }
+
         // API to get tasks for the current week
         [HttpGet("GetTasksForWeek/{userId}")]
         public async Task<IActionResult> GetTasksForWeek(int userId)

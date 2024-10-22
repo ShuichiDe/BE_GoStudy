@@ -15,19 +15,26 @@ namespace BE_GOStudy.Hubs
 {
     Console.WriteLine($"User {userId} is trying to connect with ConnectionId: {Context.ConnectionId}");
 
-    // Thêm userId và ConnectionId vào danh sách online
-    var added = OnlineUsers.TryAdd(userId.ToString(), Context.ConnectionId);
-
-    if (added)
+    // Kiểm tra nếu user đã có trong danh sách online
+    if (OnlineUsers.ContainsKey(userId.ToString()))
     {
-        Console.WriteLine($"User {userId} successfully added to the online list.");
+        Console.WriteLine($"User {userId} is already online. Updating ConnectionId.");
+        OnlineUsers[userId.ToString()] = Context.ConnectionId;
     }
     else
     {
-        Console.WriteLine($"Failed to add user {userId} to the online list.");
+        var added = OnlineUsers.TryAdd(userId.ToString(), Context.ConnectionId);
+        if (added)
+        {
+            Console.WriteLine($"User {userId} successfully added to the online list.");
+        }
+        else
+        {
+            Console.WriteLine($"Failed to add user {userId} to the online list.");
+        }
     }
 
-    // Thông báo cho tất cả người dùng khác rằng user đã online
+    // Thông báo cho tất cả người dùng rằng user đã online
     await Clients.All.SendAsync("UserStatusChanged", userId, true);
 }
 

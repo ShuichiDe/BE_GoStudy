@@ -23,10 +23,6 @@ namespace DataAccess.Repositories
         
 
         Task<Tasks> GetTaskByTaskId(int TaskId);
-        
-        
-        Task<IEnumerable<Tasks>> GetTaskByUserIdForDateRange(int userId, DateTime utcToday);
-
 
     }
 
@@ -170,14 +166,7 @@ namespace DataAccess.Repositories
 
         public async Task<Tasks> GetTaskByTaskId(int TaskId)
         {
-            return await _studyContext.Tasks.FirstOrDefaultAsync(t => t.TaskId == TaskId && !t.IsDeleted);
-        }
-
-        public async Task<IEnumerable<Tasks>> GetTaskByUserIdForDateRange(int userId, DateTime utcToday)
-        {
-            return await _studyContext.Tasks
-                .Where(t => t.UserId == userId && t.ScheduledTime.Date == utcToday && !t.IsDeleted)
-                .ToListAsync();
+            return await _studyContext.Tasks.FirstOrDefaultAsync(t => t.TaskId == TaskId && !t.IsDeleted); // Điều kiện thêm vào
         }
     }
 

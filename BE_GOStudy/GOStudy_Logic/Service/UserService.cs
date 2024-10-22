@@ -169,8 +169,8 @@ namespace GO_Study_Logic.Service
                 {
                     return new FriendViewModel
                     {
-                        Requester = null, // Không cần hiển thị thông tin người gửi
-                        Recipient = new UserViewModel
+                        //      Requester = null, // Không cần hiển thị thông tin người gửi
+                        MyFriend = new UserViewModel
                         {
                             UserId = fr.Recipient.UserId,
                             FullName = fr.Recipient.FullName,
@@ -184,8 +184,8 @@ namespace GO_Study_Logic.Service
                 {
                     return new FriendViewModel
                     {
-                        Recipient = null, // Không cần hiển thị thông tin người nhận
-                        Requester = new UserViewModel
+                        // Recipient = null, // Không cần hiển thị thông tin người nhận
+                        MyFriend = new UserViewModel
                         {
                             UserId = fr.Requester.UserId,
                             FullName = fr.Requester.FullName,

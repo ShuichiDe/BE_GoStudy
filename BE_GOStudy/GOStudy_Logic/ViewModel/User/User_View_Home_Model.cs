@@ -60,8 +60,8 @@ namespace GO_Study_Logic.ViewModel.User
 
     public class FriendViewModel
     {
-        public UserViewModel? Requester { get; set; } // Thông tin người gửi
-        public UserViewModel? Recipient { get; set; } // Thông tin người nhận
+     //   public UserViewModel? Requester { get; set; } // Thông tin người gửi
+        public UserViewModel? MyFriend { get; set; } // Thông tin người nhận
     }
 
     public class User_View_Home_Model

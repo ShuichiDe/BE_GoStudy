@@ -70,7 +70,8 @@ namespace BE_GOStudy.DependencyInjection
 
             services.AddScoped<ContactInfoService>();
 
-
         }
     }
 }
+
+

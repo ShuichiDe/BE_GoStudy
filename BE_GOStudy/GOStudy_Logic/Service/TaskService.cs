@@ -63,19 +63,8 @@ namespace GO_Study_Logic.Service
         }
         public async Task<IEnumerable<TaskViewModel>> GetTasksByUserIdForTodayAsync(int userId)
         {
-            /*var tasks = await _taskRepository.GetTaskByUserIdForToday(userId);
+            var tasks = await _taskRepository.GetTaskByUserIdForToday(userId);
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
-            var utcToday = DateTime.UtcNow.Date;
-            var tasks = await _taskRepository.GetTaskByUserIdForDateRange(userId, utcToday);
-            return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);*/
-            var utcToday = DateTime.UtcNow.Date;
-            var tasks = await _taskRepository.GetTaskByUserIdForDateRange(userId, utcToday);
-            var taskViewModels = _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
-            foreach (var task in taskViewModels)
-            {
-                task.ScheduledTime = task.ScheduledTime.ToLocalTime();
-            }
-            return taskViewModels;
         }
 
         // Get tasks for the previous week
@@ -109,16 +98,12 @@ namespace GO_Study_Logic.Service
         // Save a new task
         public async Task SaveTaskAsync(TaskViewModel taskViewModel)
         {
+            
             var taskEntity = _mapper.Map<Tasks>(taskViewModel);
             taskEntity.Status = false;
             taskEntity.IsDeleted = false;
-            taskEntity.ScheduledTime = DateTime.UtcNow;
-            await _taskRepository.SaveTaskAsync(taskEntity);
-            /*var taskEntity = _mapper.Map<Tasks>(taskViewModel);
-            taskEntity.Status = false;
-            taskEntity.IsDeleted = false;
             // Save the task entity
-            await _taskRepository.SaveTaskAsync(taskEntity);*/
+            await _taskRepository.SaveTaskAsync(taskEntity);
         }
         public async Task<bool> UpdateStatusTaskCompleteAsync(int id)
         {
