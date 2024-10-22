@@ -64,10 +64,18 @@ namespace GO_Study_Logic.Service
         public async Task<IEnumerable<TaskViewModel>> GetTasksByUserIdForTodayAsync(int userId)
         {
             /*var tasks = await _taskRepository.GetTaskByUserIdForToday(userId);
+            return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
+            var utcToday = DateTime.UtcNow.Date;
+            var tasks = await _taskRepository.GetTaskByUserIdForDateRange(userId, utcToday);
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);*/
             var utcToday = DateTime.UtcNow.Date;
             var tasks = await _taskRepository.GetTaskByUserIdForDateRange(userId, utcToday);
-            return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
+            var taskViewModels = _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
+            foreach (var task in taskViewModels)
+            {
+                task.ScheduledTime = task.ScheduledTime.ToLocalTime();
+            }
+            return taskViewModels;
         }
 
         // Get tasks for the previous week
