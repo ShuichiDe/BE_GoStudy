@@ -65,12 +65,8 @@ namespace GO_Study_Logic.Service
         {
             /*var tasks = await _taskRepository.GetTaskByUserIdForToday(userId);
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);*/
-            // Lấy thời gian UTC hiện tại
             var utcToday = DateTime.UtcNow.Date;
-
-            // Gọi repository và so sánh với thời gian lưu trữ trong cơ sở dữ liệu
             var tasks = await _taskRepository.GetTaskByUserIdForDateRange(userId, utcToday);
-    
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
         }
 
@@ -108,10 +104,7 @@ namespace GO_Study_Logic.Service
             var taskEntity = _mapper.Map<Tasks>(taskViewModel);
             taskEntity.Status = false;
             taskEntity.IsDeleted = false;
-
-            // Lưu thời gian theo UTC
             taskEntity.ScheduledTime = DateTime.UtcNow;
-
             await _taskRepository.SaveTaskAsync(taskEntity);
             /*var taskEntity = _mapper.Map<Tasks>(taskViewModel);
             taskEntity.Status = false;
