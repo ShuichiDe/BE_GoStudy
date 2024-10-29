@@ -195,9 +195,55 @@ namespace GO_Study_Logic.Service
         }
     }
 
-
-
     public async Task AddBlogPostVIPAsync(BlogPost_Create_Model2 blogPostCreateModel, int userId)
+    {
+        // Map the BlogPost_Create_Model1 to BlogPost
+        var blogPost = _mapper.Map<BlogPost>(blogPostCreateModel);
+
+        // Set additional properties
+        blogPost.UserId = userId;
+        blogPost.CreatedAt = DateTime.Now;
+        blogPost.ViewCount = 0;
+        blogPost.shareCount = 0;
+        blogPost.likeCount = 0;
+        blogPost.IsDraft = false;
+        blogPost.IsFavorite = false;
+        blogPost.IsTrending = false;
+        blogPost.Tags = "default_tags";
+        blogPost.Category = "default_category";
+        if (blogPostCreateModel.Images == null || blogPostCreateModel.Images.Count == 0)
+        {
+            blogPost.image = "";
+        }
+        else
+        {
+            var validImages = blogPostCreateModel.Images
+                .Where(image => !string.IsNullOrWhiteSpace(image) && image != "string")
+                .ToList();
+            blogPost.image = validImages.Count > 0 ? validImages[0] : "";
+        }
+
+        await _repository.AddBlogPostAsync(blogPost);
+
+        // Handle multiple images by adding each one to the BlogImg table
+        if (blogPostCreateModel.Images != null && blogPostCreateModel.Images.Count > 0)
+        {
+            foreach (var imageUrl in blogPostCreateModel.Images)
+            {
+                var blogImg = new BlogImg
+                {
+                    BlogId = blogPost.PostId,  // Link to the created blog post
+                    Img = imageUrl
+                };
+
+                // Add each image to the BlogImg table
+                await _repository.AddBlogImgAsync(blogImg);
+            }
+        }
+    }
+
+
+    /*public async Task AddBlogPostVIPAsync(BlogPost_Create_Model2 blogPostCreateModel, int userId)
         {
             // Map the BlogPost_Create_Model1 to BlogPost
             var blogPost = _mapper.Map<BlogPost>(blogPostCreateModel);
@@ -232,7 +278,7 @@ namespace GO_Study_Logic.Service
                     await _repository.AddBlogImgAsync(blogImg);
                 }
             }
-        }
+        }*/
 
     public async Task<bool> DeleteBlogPostAsync(int postId)
     {
