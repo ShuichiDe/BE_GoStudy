@@ -169,8 +169,8 @@ namespace GO_Study_Logic.Service
                 {
                     return new FriendViewModel
                     {
-                        //      Requester = null, // Không cần hiển thị thông tin người gửi
-                        MyFriend = new UserViewModel
+                        Requester = null, // Không cần hiển thị thông tin người gửi
+                        Recipient = new UserViewModel
                         {
                             UserId = fr.Recipient.UserId,
                             FullName = fr.Recipient.FullName,
@@ -184,8 +184,8 @@ namespace GO_Study_Logic.Service
                 {
                     return new FriendViewModel
                     {
-                        // Recipient = null, // Không cần hiển thị thông tin người nhận
-                        MyFriend = new UserViewModel
+                        Recipient = null, // Không cần hiển thị thông tin người nhận
+                        Requester = new UserViewModel
                         {
                             UserId = fr.Requester.UserId,
                             FullName = fr.Requester.FullName,
@@ -372,7 +372,7 @@ namespace GO_Study_Logic.Service
                 return null; // Handle user not found scenario
             }
             var semsterss = await _semestersRepository.GetByIdAsync(user.SemesterId);
-         var Specialization = await _specializationRepository.GetAllSpecializationsByUserIDAsync(userid);
+            var Specialization = await _specializationRepository.GetAllSpecializationsByUserIDAsync(userid);
             var privacySetting = await _userRepository.GetPrivacySettingByuserIDAsync(userid);
            
             var SpecializationViewModel = _mapper.Map<List<Specialization_View_Model>>(Specialization);
@@ -384,7 +384,7 @@ namespace GO_Study_Logic.Service
                 FullName = user.FullName,
                 Semester  = semsterViewModel,
                 Email = user.Email,
-              Specialization = SpecializationViewModel,
+                Specialization = SpecializationViewModel,
                 ProfileImage = user.ProfileImage,
                 PrivacySetting = privacySettingViewModel,
                 PasswordHash = user.PasswordHash ,
