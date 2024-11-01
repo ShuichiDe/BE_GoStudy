@@ -46,14 +46,24 @@ namespace GO_Study_Logic.Service
         _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<BlogPost_View_Model_All>> GetAllBlogPostsAsync()
+        /*public async Task<IEnumerable<BlogPost_View_Model_All>> GetAllBlogPostsAsync()
         {
             var blogPosts = await _repository.GetAllBlogPostsAsync();
             
             return _mapper.Map<IEnumerable<BlogPost_View_Model_All>>(blogPosts);
-        }
+        }*/
+        public async Task<IEnumerable<BlogPost_View_Model_All>> GetAllBlogPostsAsync()
+        {
+            var blogPosts = await _repository.GetAllBlogPostsAsync();
+            var blogPostsViewModels = _mapper.Map<IEnumerable<BlogPost_View_Model_All>>(blogPosts);
+            foreach (var post in blogPostsViewModels)
+            {
+                post.CreatedAt = TimeZoneInfo.ConvertTimeFromUtc(post.CreatedAt, TimeZoneInfo.Local);
+            }
 
-    public async Task<PaginatedResult<BlogPost_View_Model_All>> GetUserBlogPosts(int userId, int pageNumber, int pageSize)
+            return blogPostsViewModels;
+        }
+    /*public async Task<PaginatedResult<BlogPost_View_Model_All>> GetUserBlogPosts(int userId, int pageNumber, int pageSize)
     {
         var blogPosts =  await _repository.GetUserBlogPosts(userId, pageNumber, pageSize);
         var blogPostsViewModels = _mapper.Map<IEnumerable<BlogPost_View_Model_All>>(blogPosts);
@@ -65,7 +75,27 @@ namespace GO_Study_Logic.Service
             TotalCount = totalBlogPostsCount,
             Data = blogPostsViewModels
         };
+    }*/
+    public async Task<PaginatedResult<BlogPost_View_Model_All>> GetUserBlogPosts(int userId, int pageNumber, int pageSize)
+    {
+        var blogPosts = await _repository.GetUserBlogPosts(userId, pageNumber, pageSize);
+        var blogPostsViewModels = _mapper.Map<IEnumerable<BlogPost_View_Model_All>>(blogPosts);
+
+        foreach (var post in blogPostsViewModels)
+        {
+            post.CreatedAt = TimeZoneInfo.ConvertTimeFromUtc(post.CreatedAt, TimeZoneInfo.Local);
+        }
+
+        var totalBlogPostsCount = await _repository.CountUserLikedPostsAsync(userId, pageNumber);
+        return new PaginatedResult<BlogPost_View_Model_All>
+        {
+            CurrentPage = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalBlogPostsCount,
+            Data = blogPostsViewModels
+        };
     }
+    
     public async Task<bool> CanCreateBlogPostAsync(int userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
@@ -143,7 +173,7 @@ namespace GO_Study_Logic.Service
         return true;
     }
 
-    public async Task<PaginatedResult<BlogPost_View_Model_All>> GetPaginatedBlogPostsAsync(int pageNumber, int pageSize)
+    /*public async Task<PaginatedResult<BlogPost_View_Model_All>> GetPaginatedBlogPostsAsync(int pageNumber, int pageSize)
     {
         var blogPosts = await _repository.GetPaginatedBlogPostsAsync(pageNumber, pageSize);
        
@@ -156,7 +186,27 @@ namespace GO_Study_Logic.Service
             TotalCount = totalBlogPostsCount,
             Data = blogPostsViewModels
         };
+    }*/
+    public async Task<PaginatedResult<BlogPost_View_Model_All>> GetPaginatedBlogPostsAsync(int pageNumber, int pageSize)
+    {
+        var blogPosts = await _repository.GetPaginatedBlogPostsAsync(pageNumber, pageSize);
+        var blogPostsViewModels = _mapper.Map<IEnumerable<BlogPost_View_Model_All>>(blogPosts);
+
+        foreach (var post in blogPostsViewModels)
+        {
+            post.CreatedAt = TimeZoneInfo.ConvertTimeFromUtc(post.CreatedAt, TimeZoneInfo.Local);
+        }
+
+        var totalBlogPostsCount = await _repository.CountTotalBlogs();
+        return new PaginatedResult<BlogPost_View_Model_All>
+        {
+            CurrentPage = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalBlogPostsCount,
+            Data = blogPostsViewModels
+        };
     }
+
 
 
     public async Task<bool> AddCommentAsync(Comment comment)
@@ -175,7 +225,7 @@ namespace GO_Study_Logic.Service
         {
             var blogPost = _mapper.Map<BlogPost>(blogPostCreateModel);
             blogPost.UserId = userid;
-            blogPost.CreatedAt = DateTime.Now;
+            blogPost.CreatedAt = DateTime.UtcNow;
             blogPost.ViewCount = 0;
             blogPost.shareCount = 0;
             blogPost.likeCount = 0;
@@ -183,7 +233,7 @@ namespace GO_Study_Logic.Service
             blogPost.IsFavorite = false;
             blogPost.IsTrending = false;
             blogPost.Tags = "123";
-            blogPost.CreatedAt = DateTime.Now;
+            blogPost.CreatedAt = DateTime.UtcNow;
             blogPost.ViewCount = 0;
             blogPost.shareCount = 0;
             blogPost.likeCount = 0;
@@ -250,7 +300,7 @@ namespace GO_Study_Logic.Service
 
         // Thiết lập các thuộc tính bổ sung
         blogPost.UserId = userId;
-        blogPost.CreatedAt = DateTime.Now;
+        blogPost.CreatedAt = DateTime.UtcNow;
         blogPost.ViewCount = 0;
         blogPost.shareCount = 0;
         blogPost.likeCount = 0;
